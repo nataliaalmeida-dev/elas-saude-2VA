@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Elas Saúde — Cadastrar paciente</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+</head>
+<body class="layout">
+  <main class="card-container">
+    <section class="brand">
+      <div class="logo">
+		<img src="{{ url_for('static', filename='assets/logo.png') }}" alt="Elas Saúde — logo" class="logo-img" />
+		<h1 id="title">Elas Saúde</h1>
+	  </div>
+      <p class="tagline">Cuidando da saúde da mulher com praticidade e acolhimento</p>
+    </section>
+
+    <section class="panel">
+      <form id="profileForm" class="form" method="POST" action="{{ url_for('main.perfil') }}" enctype="multipart/form-data" novalidate>
+        <h2>Meu Perfil</h2>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              {% if category == 'success' %}
+              <div style="background-color: #e8f5e9; color: #2e7d32; padding: 12px; border-radius: 8px; margin-bottom: 1rem; font-size: 0.9rem; text-align: center; border: 1px solid #c8e6c9;">{{ message }}</div>
+              {% else %}
+              <div style="background-color: #ffebee; color: #d32f2f; padding: 12px; border-radius: 8px; margin-bottom: 1rem; font-size: 0.9rem; text-align: center; border: 1px solid #ffcdd2;">{{ message }}</div>
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <label for="foto">Sua Foto de Perfil (Envie um novo arquivo se quiser alterar)</label>
+        <div style="display:flex; align-items:center; gap: 1rem; margin-bottom: 1.5rem;">
+          <img src="{{ get_avatar_url(current_user.cpf) }}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 50%;">
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <input id="foto" name="foto" type="file" accept="image/*" style="border: none; padding: 0;">
+            <label style="font-size:0.85rem; display:flex; align-items:center; gap:4px; font-weight:normal; margin:0; cursor:pointer;">
+              <input type="checkbox" name="remover_foto" value="1"> Remover foto atual
+            </label>
+          </div>
+        </div>
+
+        <label for="nome">Nome completo</label>
+        <input id="nome" name="nome" type="text" required value="{{ current_user.nome }}">
+
+        <label for="cpf">CPF</label>
+        <input id="cpf" name="cpf" type="text" inputmode="numeric" required value="{{ current_user.cpf }}" readonly>
+
+        <label for="email">E-mail</label>
+        <input id="email" name="email" type="email" required value="{{ current_user.email }}" readonly>
+
+        <label for="telefone">Telefone</label>
+        <input id="telefone" name="telefone" type="tel" value="{{ current_user.telefone or '' }}">
+
+        <label for="nascimento">Data de nascimento</label>
+        <input id="nascimento" name="nascimento" type="date" value="{{ current_user.nascimento.strftime('%Y-%m-%d') if current_user.nascimento else '' }}">
+
+        <label for="senha">Nova Senha (deixe em branco se não quiser alterar)</label>
+        <input id="senha" name="senha" type="password" minlength="6">
+
+        <label for="senha2">Repita a Nova Senha</label>
+        <input id="senha2" name="senha2" type="password" minlength="6">
+
+        <div class="row-between">
+          <a href="{{ url_for('main.profissionais') }}" class="link">Voltar</a>
+          <button type="submit" class="btn primary">Atualizar Perfil</button>
+        </div>
+
+      </form>
+    </section>
+  </main>
+
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

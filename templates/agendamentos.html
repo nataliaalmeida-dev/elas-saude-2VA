@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Elas Saúde — Meus Agendamentos</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="container topbar-flex">
+      <img src="{{ url_for('static', filename='assets/logo.png') }}" alt="Elas Saúde — logo" class="logo-small" />
+    
+      <div class="user-menu">
+        <img id="userAvatar" class="user-avatar" 
+             src="{{ get_avatar_url(current_user.cpf) }}" 
+             alt="Avatar do usuário"/>
+        <div id="userDropdown" class="user-dropdown">
+          <a href="{{ url_for('main.profissionais') }}">Início</a>
+          <a href="{{ url_for('main.perfil') }}">Meu Perfil</a>
+          <a href="{{ url_for('main.agendamentos') }}">Meus Agendamentos</a>
+          {% if current_user.is_admin %}
+          <a href="{{ url_for('main.admin') }}">Área Admin</a>
+          {% endif %}
+          <a href="#" id="logoutBtn">Sair</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div style="margin-bottom: 1rem;">
+      <a href="javascript:history.back()" class="link">← Voltar</a>
+    </div>
+    <h1>Meus Agendamentos</h1>
+    <div id="appointmentsList">
+    {% if not agendamentos %}
+      <p>Nenhum agendamento encontrado.</p>
+    {% else %}
+      {% for ag in agendamentos %}
+      <div class="card">
+        <div style="display:flex; width:100%;">
+          <div style="flex:1">
+            <h3>{{ ag.profissional.nome }}</h3>
+            <p>{{ ag.profissional.area }}</p>
+            <p>Data: {{ ag.data_hora.strftime('%d/%m/%Y %H:%M') }}</p>
+            <p>Status: {{ ag.status|capitalize }}</p>
+          </div>
+          <div>
+            <button class="btn cancelar-btn" data-id="{{ ag.id }}">Cancelar</button>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    {% endif %}
+    </div>
+  </main>
+
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

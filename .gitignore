@@ -1,0 +1,46 @@
+# ==========================================
+# 🐍 Python & Ambientes Virtuais
+# ==========================================
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
+env/
+.python-version
+
+# ==========================================
+# 🧪 Configurações Locais e Segredos
+# ==========================================
+# IMPORTANTE: Nunca suba suas senhas ou URLs reais de banco de dados
+.env
+instance/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ==========================================
+# 🐳 Docker (Dados Locais do Postgres)
+# ==========================================
+# Ignora os arquivos físicos do banco de dados salvos pelo Docker na sua máquina
+.docker/
+pgdata/
+postgres_data/
+
+# ==========================================
+# 🛠️ Ferramentas de Build e Package (UV / Pip)
+# ==========================================
+.uv/
+.eggs/
+build/
+dist/
+*.egg-info/
+
+# ==========================================
+# 💻 Arquivos de Sistema (SO) e IDEs
+# ==========================================
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

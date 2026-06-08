@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Elas Saúde — Editar Profissional</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+  <style>
+    .admin-container {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="container topbar-flex">
+      <img src="{{ url_for('static', filename='assets/logo.png') }}" alt="Elas Saúde — logo" class="logo-small" />
+    
+      <div class="user-menu">
+        <img id="userAvatar" class="user-avatar" 
+             src="{{ get_avatar_url(current_user.cpf) }}" 
+             alt="Avatar do usuário"/>
+        <div id="userDropdown" class="user-dropdown">
+          <a href="{{ url_for('main.profissionais') }}">Início</a>
+          <a href="{{ url_for('main.perfil') }}">Meu Perfil</a>
+          <a href="{{ url_for('main.agendamentos') }}">Meus Agendamentos</a>
+          {% if current_user.is_admin %}
+          <a href="{{ url_for('main.admin') }}">Área Admin</a>
+          {% endif %}
+          <a href="#" id="logoutBtn">Sair</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container admin-container">
+    <h2>Editar Profissional</h2>
+    
+    <section class="panel" style="margin-top: 1rem; padding: 1.5rem;">
+      <form class="form" method="POST" action="{{ url_for('main.admin_edit', id=p.id) }}" enctype="multipart/form-data">
+        
+        <label for="nome">Nome do Profissional</label>
+        <input id="nome" name="nome" type="text" value="{{ p.nome }}" required>
+
+        <label for="crm">CRM</label>
+        <input id="crm" name="crm" type="text" value="{{ p.crm or '' }}" required>
+
+        <label for="area">Especialidade</label>
+        <input id="area" name="area" type="text" value="{{ p.area }}" required>
+
+        <label for="foto">Foto do Profissional (atual ao lado. Envie uma nova para trocar)</label>
+        <div style="display: flex; gap: 15px; align-items:center; margin-bottom:15px;">
+           <img src="{{ get_prof_foto_url(p.foto_url) }}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 50%;">
+           <div style="display:flex; flex-direction:column; gap:8px;">
+             <input id="foto" name="foto" type="file" accept="image/*" style="border: none; padding: 0;">
+             <label style="font-size:0.85rem; display:flex; align-items:center; gap:4px; font-weight:normal; margin:0; cursor:pointer;">
+               <input type="checkbox" name="remover_foto" value="1"> Limpar para foto padrão
+             </label>
+           </div>
+        </div>
+
+        <div class="row-between">
+          <a href="{{ url_for('main.admin') }}" class="link">Voltar</a>
+          <button type="submit" class="btn primary">Atualizar Profissional</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="panel" style="margin-top: 1.5rem; padding: 1.5rem;">
+      <h3>Agendamentos deste Profissional</h3>
+      {% if p.agendamentos %}
+        <table style="width:100%; text-align:left; border-collapse:collapse; margin-top:1rem;">
+          <thead>
+            <tr style="border-bottom: 2px solid #eee;">
+              <th style="padding:8px;">Paciente</th>
+              <th style="padding:8px;">Data/Hora</th>
+              <th style="padding:8px;">Status</th>
+              <th style="padding:8px;">Ação</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for a in p.agendamentos|sort(attribute='data_hora') %}
+            <tr style="border-bottom: 1px solid #eee;">
+              <td style="padding:8px;">{{ a.paciente.nome }}</td>
+              <td style="padding:8px;">{{ a.data_hora.strftime('%d/%m/%Y %H:%M') }}</td>
+              <td style="padding:8px;">{{ a.status }}</td>
+              <td style="padding:8px;">
+                <form action="{{ url_for('main.admin_cancel_appointment', id=a.id) }}" method="POST" style="display:inline;">
+                  <button type="submit" class="btn" style="padding: 4px 10px; font-size: 0.8rem; background-color: #d32f2f; color: white;" onclick="return confirm('Deseja realmente cancelar este agendamento?');">Cancelar Consulta</button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p class="muted" style="margin-top: 1rem;">Nenhum agendamento encontrado para este profissional.</p>
+      {% endif %}
+    </section>
+
+  </main>
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

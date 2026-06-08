@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Elas Saúde — Buscar Profissionais</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="container topbar-flex">
+      <img src="{{ url_for('static', filename='assets/logo.png') }}" alt="Elas Saúde — logo" class="logo-small" />
+    
+      <div class="user-menu">
+        <img id="userAvatar" class="user-avatar" 
+             src="{{ get_avatar_url(current_user.cpf) }}" 
+             alt="Avatar do usuário"/>
+        <div id="userDropdown" class="user-dropdown">
+          <a href="{{ url_for('main.profissionais') }}">Início</a>
+          <a href="{{ url_for('main.perfil') }}">Meu Perfil</a>
+          <a href="{{ url_for('main.agendamentos') }}">Meus Agendamentos</a>
+          {% if current_user.is_admin %}
+          <a href="{{ url_for('main.admin') }}">Área Admin</a>
+          {% endif %}
+          <a href="#" id="logoutBtn">Sair</a>
+        </div>
+      </div>
+    </div>
+	
+    <div class="container">
+	  <h2>Encontre um profissional de saúde</h2>
+      <div class="search-row">
+        <input id="searchInput" placeholder="Busque por nome ou especialidade" />
+        <select id="specialtySelect">
+          <option value="">Todas as especialidades</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <main class="container content-grid" aria-live="polite">
+    <div id="results" class="cards">
+      <!-- Cards são gerados por JavaScript -->
+    </div>
+  </main>
+
+  <script>
+    window.PROFISSIONAIS_DB = [
+      {% for item in profissionais %}
+      { id: {{ item.id }}, nome: "{{ item.nome }}", crm: "{{ item.crm or 'CRM-PE' }}", especialidade: "{{ item.area }}", foto: "{{ get_prof_foto_url(item.foto_url) }}" }{% if not loop.last %},{% endif %}
+      {% endfor %}
+    ];
+  </script>
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

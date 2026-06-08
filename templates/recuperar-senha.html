@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Elas Saúde — Recuperar acesso</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+</head>
+<body class="layout">
+  <main class="card-container">
+    <section class="brand">
+	  <div class="logo">
+		<img src="{{ url_for('static', filename='assets/logo.png') }}" alt="Elas Saúde — logo" class="logo-img" />
+		<h1 id="title">Elas Saúde</h1>
+	  </div>
+      <p class="tagline">Problemas para entrar? Insira o seu email que enviaremos um link para você voltar a acessar a sua conta.</p>
+    </section>
+
+    <section class="panel">
+      <form id="recoverForm" class="form" novalidate>
+        <h2>Recuperar acesso</h2>
+
+        <label for="recoverEmail">E-mail</label>
+        <input id="recoverEmail" name="recoverEmail" type="email" required>
+		
+		<div class="row-between">
+          <a href="index.html" class="link">Voltar</a>
+          <button type="submit" class="btn primary">Enviar link para login</button>
+        </div>
+
+        
+      </form>
+    </section>
+  </main>
+
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

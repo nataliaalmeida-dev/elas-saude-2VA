@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Elas Saúde — Área Administrativa</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+  <style>
+    .admin-container {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    .prof-list {
+      margin-top: 2rem;
+    }
+    .prof-list table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .prof-list th, .prof-list td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    .prof-list th {
+      background-color: #fce4ec;
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="container topbar-flex">
+      <img src="{{ url_for('static', filename='assets/logo.png') }}" alt="Elas Saúde — logo" class="logo-small" />
+    
+      <div class="user-menu">
+        <img id="userAvatar" class="user-avatar" 
+             src="{{ get_avatar_url(current_user.cpf) }}" 
+             alt="Avatar do usuário"/>
+        <div id="userDropdown" class="user-dropdown">
+          <a href="{{ url_for('main.profissionais') }}">Início</a>
+          <a href="{{ url_for('main.perfil') }}">Meu Perfil</a>
+          <a href="{{ url_for('main.agendamentos') }}">Meus Agendamentos</a>
+          {% if current_user.is_admin %}
+          <a href="{{ url_for('main.admin') }}">Área Admin</a>
+          {% endif %}
+          <a href="#" id="logoutBtn">Sair</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container admin-container">
+    <h2>Área Administrativa</h2>
+    <p>Cadastre novos profissionais e especialidades.</p>
+    
+    <section class="panel" style="margin-top: 1rem; padding: 1.5rem;">
+      <form class="form" method="POST" action="{{ url_for('main.admin') }}" enctype="multipart/form-data">
+        <h3>Novo Profissional</h3>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div style="background-color: #e8f5e9; color: #2e7d32; padding: 12px; border-radius: 8px; margin-bottom: 1rem; font-size: 0.9rem; text-align: center; border: 1px solid #c8e6c9;">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+        
+        <label for="nome">Nome do Profissional (ex: Dra. Jane Doe)</label>
+        <input id="nome" name="nome" type="text" required>
+
+        <label for="crm">CRM (ex: 12345-PE)</label>
+        <input id="crm" name="crm" type="text" required>
+
+        <label for="area">Especialidade</label>
+        <input id="area" name="area" type="text" required>
+
+        <label for="foto">Foto do Profissional</label>
+        <input id="foto" name="foto" type="file" accept="image/*" style="margin-bottom: 15px;">
+
+        <button type="submit" class="btn primary">Cadastrar Profissional</button>
+      </form>
+    </section>
+
+    <div class="prof-list">
+      <h3>Profissionais Cadastrados</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>CRM</th>
+            <th>Especialidade</th>
+            <th>Consultas</th>
+            <th>Foto</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in profissionais %}
+          <tr>
+            <td>{{ p.nome }}</td>
+            <td>{{ p.crm or '-' }}</td>
+            <td>{{ p.area }}</td>
+            <td>{{ p.agendamentos|length }}</td>
+            <td><img src="{{ get_prof_foto_url(p.foto_url) }}" alt="foto" style="width: 40px; height: 40px; object-fit: cover; border-radius: 50%;"></td>
+            <td>
+               <a href="{{ url_for('main.admin_edit', id=p.id) }}" class="btn" style="padding: 4px 8px; font-size: 0.8rem;">Editar</a>
+               <form action="{{ url_for('main.admin_delete', id=p.id) }}" method="POST" style="display:inline;">
+                 <button type="submit" class="btn" style="padding: 4px 8px; font-size: 0.8rem; background-color:#ffcdd2; color:#d32f2f" onclick="return confirm('Excluir este profissional?')">Remover</button>
+               </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

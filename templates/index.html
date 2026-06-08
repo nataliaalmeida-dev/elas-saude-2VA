@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Elas Saúde — Entrar</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+</head>
+<body class="layout">
+  <main class="card-container" aria-labelledby="title">
+    <section class="brand">
+      <div class="logo">
+	    <img src="{{ url_for('static', filename='assets/logo.png') }}" alt="Elas Saúde — logo" class="logo-img" />
+        <h1 id="title">Elas Saúde</h1>
+	  </div>
+      <p class="tagline">Cuidando da saúde da mulher com praticidade e acolhimento</p>
+    </section>
+
+    <section class="panel" aria-label="Formulário de login">
+      <form id="loginForm" class="form" method="POST" action="{{ url_for('main.index') }}" novalidate>
+        <h2>Entrar</h2>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div style="background-color: #ffebee; color: #d32f2f; padding: 12px; border-radius: 8px; margin-bottom: 1rem; font-size: 0.9rem; text-align: center; border: 1px solid #ffcdd2;">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <label for="email">E-mail</label>
+        <input id="email" name="email" type="email" required placeholder="seu@email.com">
+
+        <label for="password">Senha</label>
+        <input id="password" name="password" type="password" required minlength="6" placeholder="••••••">
+
+        <div class="row-between">
+          <a href="{{ url_for('main.recuperar_senha') }}" class="link">Esqueceu a senha?</a>
+        </div>
+
+        <button type="submit" class="btn primary">Entrar</button>
+
+        <p class="muted">Ainda não tem cadastro? <a href="{{ url_for('main.cadastrar') }}">Fazer cadastro</a></p>
+      </form>
+    </section>
+  </main>
+
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
+	

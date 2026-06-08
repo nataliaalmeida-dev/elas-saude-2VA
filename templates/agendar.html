@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Elas Saúde — Agendar Consulta</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="container topbar-flex">
+      <img src="{{ url_for('static', filename='assets/logo.png') }}" alt="Elas Saúde — logo" class="logo-small" />
+    
+      <div class="user-menu">
+        <img id="userAvatar" class="user-avatar" 
+             src="{{ get_avatar_url(current_user.cpf) }}" 
+             alt="Avatar do usuário"/>
+        <div id="userDropdown" class="user-dropdown">
+          <a href="{{ url_for('main.profissionais') }}">Início</a>
+          <a href="{{ url_for('main.perfil') }}">Meu Perfil</a>
+          <a href="{{ url_for('main.agendamentos') }}">Meus Agendamentos</a>
+          {% if current_user.is_admin %}
+          <a href="{{ url_for('main.admin') }}">Área Admin</a>
+          {% endif %}
+          <a href="#" id="logoutBtn">Sair</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+
+  <div style="margin-bottom: 1rem;">
+    <a href="{{ url_for('main.profissionais') }}" class="link">← Voltar</a>
+  </div>
+
+  <section id="perfil-profissional" class="perfil-box">
+    <img id="prof-foto" class="prof-foto-large" src="" alt="">
+    <h2 id="prof-nome"></h2>
+    <p id="prof-area"></p>
+  </section>
+
+  <section id="agenda-container" class="agenda-grid">
+    <!-- Agenda será inserida aqui -->
+  </section>
+
+</main>
+
+  <script>
+    window.PROFISSIONAL_ATUAL = {
+      id: {{ profissional.id }},
+      nome: "{{ profissional.nome }}",
+      especialidade: "{{ profissional.area }}",
+      foto: "{{ get_prof_foto_url(profissional.foto_url) }}"
+    };
+    window.AGENDAMENTOS_PROFISSIONAL = [
+      {% for a in agendamentos %}
+      { profissional_id: {{ a.profissional_id }}, data_hora: "{{ a.data_hora.strftime('%Y-%m-%d %H:%M:00') }}" }{% if not loop.last %},{% endif %}
+      {% endfor %}
+    ];
+  </script>
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
